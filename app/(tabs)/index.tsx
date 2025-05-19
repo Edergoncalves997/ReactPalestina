@@ -2,23 +2,38 @@ import { Text, View, StyleSheet } from "react-native";
 import { Link } from 'expo-router';
 import Button from '@/app/components/Button';
 import ImageViewer from "../components/ImageViewer";
+import * as ImagePicker from 'expo-image-picker';
+import {useState} from 'react';
+const PlaceholderImage = require('@/assets/images/palestina.webp');
 
-const PlaceholderImage = require('@/assets/images/bolsonaro.jpeg');
+export default function Index(){
+const [selectedImage, setSelectedImagem] = useState<string |undefined>(undefined);
 
-export default function Index() {
+  const pickImageAsync = async() =>{
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      quality: 1,
+    });
+  
+
+  if (!result.canceled) {
+    setSelectedImagem(result.assets[0].uri);
+  } else {
+    alert('You did not select any image. ');
+  }
+}
+
   return (
     <View style={styles.container}>
       <ImageViewer
-        imgSource={PlaceholderImage}
-      />
-      <Text style={styles.title}>Conheça a Palestina</Text>
+        imgSource={PlaceholderImage} selectedImage={selectedImage}/>
+      <Text style={styles.title}>Conheça O Bolsonaro</Text>
       <Text style={styles.introText}>
-        Este aplicativo é dedicado à história, cultura e atualidades do povo palestino. 
-        Explore informações sobre territórios, conflitos e iniciativas de paz nesta 
-        região tão significativa para a humanidade.
+        Este aplicativo é dedicado a historia do melhor presidente que o Brasil ja teve, Jair Messias Bolsonaro
       </Text>
       
-      <Button label = 'Sobre a Palestina' url = 'http://localhost:8081/about'/>
+      <Button label = 'Sobre a Palestina'/>
     </View>
   );
 }
