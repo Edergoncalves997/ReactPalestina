@@ -6,11 +6,11 @@ import { Linking } from 'react-native';
 type Props = {
     label: string;
     theme?: 'primary';
-    url: string;
+    onPress?: () => void ;
 };
 
 
-export default function Button({ label, theme, url }: Props) {
+export default function Button({ label, theme, onPress }: Props) {
     if (theme === 'primary') {
         return (
             <View
@@ -21,7 +21,7 @@ export default function Button({ label, theme, url }: Props) {
             >
                 <Pressable
                     style={[styles.button, { backgroundColor: '#fff' }]}
-                    onPress={() => Linking.openURL(url)}
+                    onPress={onPress}
                     >
                     <FontAwesome
                         name="heart"
@@ -44,7 +44,7 @@ export default function Button({ label, theme, url }: Props) {
                     styles.button,
                     pressed ? styles.buttonPressed : null,
                 ]}
-                onPress={() => Linking.openURL(url)}
+                onPress={onPress}
             >
                 <Text style={styles.buttonLabel}>{label}</Text>
             </Pressable>
