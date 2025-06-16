@@ -34,108 +34,109 @@ export default function App() {
       <FlatList
         data={tarefas}
         keyExtractor={(item) => item.id}
-        numColumns={2}
-        renderItem={({ item }) => {
-          return (
-            <View style={styles.card}>
-              <Text style={styles.tarefaTexto}>{item.texto}</Text>
-              <TouchableOpacity
-                style={styles.remover}
-                onPress={() => removerTarefa(item.id)}
-              >
-                <Text style={styles.textoRemover}>X</Text>
-              </TouchableOpacity>
-            </View>
-          );
-        }}
+        numColumns={1}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <Text style={styles.tarefaTexto}>{item.texto}</Text>
+            <TouchableOpacity
+              style={styles.remover}
+              onPress={() => removerTarefa(item.id)}
+            >
+              <Text style={styles.textoRemover}>X</Text>
+            </TouchableOpacity>
+          </View>
+        )}
         contentContainerStyle={styles.lista}
       />
+
     </View>
   );
 }
 
 const screenWidth = Dimensions.get('window').width;
-const cardWidth = (screenWidth - 40) / 2 - 10; 
-const cardHeight = cardWidth * 1.2; 
+const numColumns = 2;
+const spacing = 8;
+const availableWidth = screenWidth - (spacing * 3); // espaço para 2 cards + 3 espaços (bordas e meio)
+const cardWidth = availableWidth / 2;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: spacing,
     backgroundColor: '#F4F8D3',
   },
   titulo: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#003366',
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: spacing * 1.5,
   },
   inputContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: spacing * 1.5,
+    gap: spacing,
   },
   input: {
     flex: 1,
     borderWidth: 1,
     borderColor: '#ADD8E6',
-    borderRadius: 10,
-    padding: 15,
-    marginRight: 10,
+    borderRadius: 6,
+    padding: spacing,
     backgroundColor: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 14,
   },
   botaoAdicionar: {
     backgroundColor: '#003366',
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 10,
+    paddingVertical: spacing * 0.8,
+    paddingHorizontal: spacing * 1.5,
+    borderRadius: 6,
+    justifyContent: 'center',
   },
   textoBotao: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
   },
   lista: {
-    paddingBottom: 20,
-    justifyContent: 'center',
+    paddingBottom: spacing,
+  },
+  row: {
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing/2,
   },
   card: {
-    borderRadius: 15,
-    padding: 15,
-    width: cardWidth,
-    height: cardHeight,
-    margin: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-    position: 'relative',
+    width: '100%',
+    aspectRatio: 4, // proporção horizontal, ajustável conforme seu gosto
+    padding: spacing,
+    borderRadius: 6,
     backgroundColor: '#A1EEBD',
     borderColor: '#F7CFD8',
-    borderWidth: 2,
-  },
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+    marginBottom: spacing,
+  },  
   tarefaTexto: {
-    fontSize: 16,
+    fontSize: 12, 
     color: '#000000',
     textAlign: 'center',
-    flexShrink: 1, // Permite que o texto quebre linha se necessário
+    flexShrink: 1,
   },
   remover: {
     position: 'absolute',
-    top: 5,
-    right: 5,
+    top: 2,
+    right: 2,
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    borderRadius: 10,
-    padding: 5,
+    borderRadius: 4,
+    width: 16, 
+    height: 16, 
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   textoRemover: {
-    fontSize: 14,
+    fontSize: 10, 
     color: '#FF7F50',
     fontWeight: 'bold',
   },

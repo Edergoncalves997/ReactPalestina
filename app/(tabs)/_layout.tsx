@@ -23,9 +23,9 @@ export default function TabLayout() {
      <Tabs.Screen 
         name="index" 
         options={{
-          title: 'Home',
+          title: 'Principal',
           tabBarIcon: ({color, focused}) =>(
-            <Ionicons name={focused? "home" : 'home'} color={color} size={25}/>
+            <Ionicons name={focused ? "home" : 'home-outline'} color={color} size={25}/>
           ),
            }}
       />
@@ -33,18 +33,18 @@ export default function TabLayout() {
      <Tabs.Screen 
         name="about" 
         options={{
-          title: 'About',
+          title: 'Sobre',
           tabBarIcon: ({color, focused}) => (
-            <Ionicons name={focused? "heart" : 'heart'} color={color} size={25}/>
+            <Ionicons name={focused ? "heart" : 'heart-outline'} color={color} size={25}/>
           ),
         }}/>
 
            <Tabs.Screen 
         name="Contador"
         options={{
-          title: 'To-Do-List',
+          title: 'Lista de Tarefas',
           tabBarIcon: ({color, focused}) => (
-            <Ionicons name={focused? "skull" : 'skull'} color={color} size={25}/>
+            <Ionicons name={focused ? "list" : 'list-outline'} color={color} size={25}/>
           ),
         }}/>
   </Tabs>);

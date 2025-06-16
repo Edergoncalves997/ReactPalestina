@@ -1,195 +1,130 @@
-import { Text, View, StyleSheet, Image, Pressable } from "react-native";
-import { Link } from 'expo-router';
-import Button from '@/app/components/Button';
-import ImageViewer from "../components/ImageViewer";
+import { ImageSourcePropType, Text, View , StyleSheet } from "react-native";
+import { Link } from "expo-router";
+import { useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
-import {useState} from 'react';
-import IconButton from '@/app/components/IconButton';
-import CircleButton from '@/app/components/CircleButton';
-import EmojiPicker from '@/app/components/EmojiPicker';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-const PlaceholderImage = require('@/assets/images/palestina.webp');
-const emojis = [
-  require('@/assets/images/emoji1.png'),
-  require('@/assets/images/emoji2.png'),
-  require('@/assets/images/emoji3.png'),
-  require('@/assets/images/emoji4.png'),
-  require('@/assets/images/emoji5.png'),
-  require('@/assets/images/emoji6.png'),
-];
+import Button from "../components/Button";
+import IconButton from "../components/IconButton";
+import CircleButton from "../components/CircleButton";
+import ImageViewer from "../components/ImageViewer";
+import EmojiPicker from "../components/EmojiPicker";
+import EmojiList from "../components/EmojiList";
+import EmojiSticker from "../components/EmojiSticker";
 
-export default function Index(){
-const [selectedImage, setSelectedImagem] = useState<string |undefined>(undefined);
-const [showAppOptions, setShowAppOptions] = useState<boolean>(false);
-const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-const [selectedEmoji, setSelectedEmoji] = useState<any>(null);
+const bolsonaro = require("@/assets/images/bolsonaro.jpeg")
+
+export default function Index() {
+  const [ selectedImage, setSelectedImage ] = useState<string | undefined>(undefined);
+  const [ showAppOptions, setShowAppOptions ] = useState<boolean>(false);
+  const [ isModalVisible, setIsModalVisible ] = useState<boolean>(false);
+  const [ pickedEmoji, setPickedEmoji ] = useState<ImageSourcePropType | undefined>(undefined);
 
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
       allowsEditing: true,
       quality: 1,
-      mediaTypes: ImagePicker.MediaTypeOptions.Images
     });
 
-    if (!result.canceled) {
-      setSelectedImagem(result.assets[0].uri);
+    if( !result.canceled ){
+      setSelectedImage( result.assets[0].uri )
       setShowAppOptions(true);
-    } else {
-      alert('Você não selecionou nenhuma imagem.');
+    }else{
+      alert("Você não selecionou nenhuma imagem.")
     }
-  };
+  }
 
   const onReset = () => {
     setShowAppOptions(false);
   };
-
   const onAddSticker = () => {
     setIsModalVisible(true);
-  };
-
+  }
   const onModalClose = () => {
     setIsModalVisible(false);
-  };
-
+  }
   const onSaveImageAsync = async () => {
-    // Implementar salvamento da imagem aqui
-  };
-
-  const onEmojiSelect = (emoji: any) => {
-    setSelectedEmoji(emoji);
-    setIsModalVisible(false);
-  };
+    //depois
+  }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Conheça O Bolsonaro</Text>
-      <Text style={styles.introText}>
-        Este aplicativo é dedicado a historia do melhor presidente que o Brasil ja teve, Jair Messias Bolsonaro
-      </Text>
-      <View style={styles.imageContainer}>
-        <ImageViewer
-            imgSource={PlaceholderImage} 
-            selectedImage={selectedImage}
-        />
-        {selectedEmoji && (
-          <View style={styles.selectedEmojiContainer}>
-            <Image source={selectedEmoji} style={styles.selectedEmoji} />
+    <GestureHandlerRootView style={styles.container}>
+      <View style={styles.container}>
+        <Text style={styles.text}>Site dedicado a apoiadores do bolsonaro e Palestina</Text>
+        <Link href="/about" style={styles.button}>Sobre</Link>
+        <View style={ styles.imageContainer }>
+            <ImageViewer imgSource={bolsonaro} selectedImage={selectedImage} />
+            {pickedEmoji && <EmojiSticker imageSize={40} stickerSource={pickedEmoji} />}
+        </View> 
+          { showAppOptions ? ( 
+          <View style={ styles.optionsContainer }>
+            <View style={ styles.optionsRow }>
+              <IconButton icon="refresh" label="Reset" onPress={onReset}/>
+              <CircleButton onPress={ onAddSticker } />
+              <IconButton icon="save-alt" label="Save" onPress={onSaveImageAsync}/>
+            </View>  
+          </View>  
+        ) : ( 
+          <View style={ styles.footerContainer }>
+            <Button theme='primary' label='Escolha uma foto' onPress={pickImageAsync}/>
+            <Button label='Usar essa foto' onPress={() => setShowAppOptions(true)}/>
           </View>
         )}
+        <EmojiPicker isVisible={ isModalVisible } onClose={ onModalClose }>
+          <EmojiList onSelect={setPickedEmoji} onCloseModal={onModalClose} />
+        </EmojiPicker>
       </View>
-      {showAppOptions ? (
-        <View style={styles.optionsContainer}>
-          <View style={styles.optionsRow}>
-            <IconButton icon="refresh" label="Refresh" onPress={onReset} />
-            <CircleButton onPress={onAddSticker} />
-            <IconButton icon="save-alt" label="Save" onPress={onSaveImageAsync} />
-          </View>
-        </View>
-      ) : (
-        <View style={styles.footerContainer}>
-          <Button theme="primary" label="Escolher uma foto" onPress={pickImageAsync} />
-          <Button label="Usar esta foto" onPress={() => setShowAppOptions(true)} />
-        </View>
-      )}
-      <EmojiPicker isVisible={isModalVisible} onClose={onModalClose}>
-        <View style={styles.emojiList}>
-          {emojis.map((emoji, index) => (
-            <Pressable
-              key={index}
-              onPress={() => onEmojiSelect(emoji)}
-              style={styles.emojiContainer}
-            >
-              <Image source={emoji} style={styles.emojiImage} />
-            </Pressable>
-          ))}
-        </View>
-      </EmojiPicker>
-    </View>
+    </GestureHandlerRootView>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F4F8D3',
-    justifyContent: 'center',
+    backgroundColor: 'rgba(244, 248, 211, 0.85)',
     alignItems: 'center',
-    padding: 20,
+    justifyContent: 'center',
   },
-  image: {
-    width: '100%',
-    height: 250,
-    marginBottom: 30,
-    borderRadius: 10,
+  imageContainer: {
+    flex: 1,
+    marginBottom: -100,
+    paddingTop: 26,
   },
-  title: {
-    color: '#003366',
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 15,
-    textAlign: 'center',
+  footerContainer: {
+    flex: 1/3,
+    alignItems: 'center',
   },
-  introText: {
+  text: {
+    fontWeight: 700,
+    fontSize: 20,
     color: '#333',
-    fontSize: 16,
-    lineHeight: 24,
-    textAlign: 'center',
-    marginBottom: 30,
-    paddingHorizontal: 10,
   },
-  link: {
-    backgroundColor: '#73C7C7',
-    paddingVertical: 12,
-    paddingHorizontal: 25,
-    borderRadius: 25,
+
+  /*sdick: {
+    fontSize: 40,
+    fontWeight: 900,
+    color: 'FFFF'
+  },*/
+
+  dion: {
+    fontWeight: 700,
+    fontSize: 50,
+    color: '#e9c808',
   },
-  linkText: {
-    color: '#FFF',
-    fontSize: 16,
-    fontWeight: '600',
+
+  button: {
+    fontSize: 30,
+    fontWeight: 900,
+    color: '#214b8c',
+    textDecorationLine: 'underline',
   },
   optionsContainer: {
     position: 'absolute',
     bottom: 80,
   },
   optionsRow: {
+    alignItems: 'center',
     flexDirection: 'row',
-    alignItems: 'center',
-  },
-  footerContainer: {
-    flex: 1/3,
-    alignItems: 'center',
-  },
-  emojiList: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    padding: 20,
-  },
-  emojiContainer: {
-    padding: 10,
-  },
-  emojiImage: {
-    width: 50,
-    height: 50,
-    resizeMode: 'contain',
-  },
-  imageContainer: {
-    position: 'relative',
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  selectedEmojiContainer: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: [{translateX: -50}, {translateY: -50}],
-    zIndex: 1,
-  },
-  selectedEmoji: {
-    width: 100,
-    height: 100,
-    resizeMode: 'contain',
   },
 });
-
