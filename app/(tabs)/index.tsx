@@ -1,9 +1,8 @@
 import { ImageSourcePropType, Text, View , StyleSheet } from "react-native";
 import { Link } from "expo-router";
-import { useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-
+import * as MediaLibrary from 'expo-media-library';
 import Button from "../components/Button";
 import IconButton from "../components/IconButton";
 import CircleButton from "../components/CircleButton";
@@ -11,14 +10,20 @@ import ImageViewer from "../components/ImageViewer";
 import EmojiPicker from "../components/EmojiPicker";
 import EmojiList from "../components/EmojiList";
 import EmojiSticker from "../components/EmojiSticker";
-
+import { captureRef } from 'react-native-view-shot';
+import { useState, useRef } from 'react';
 const bolsonaro = require("@/assets/images/bolsonaro.jpeg")
 
 export default function Index() {
+  const [ status, requestPermission] = MediaLibrary.usePermissions();
   const [ selectedImage, setSelectedImage ] = useState<string | undefined>(undefined);
   const [ showAppOptions, setShowAppOptions ] = useState<boolean>(false);
   const [ isModalVisible, setIsModalVisible ] = useState<boolean>(false);
   const [ pickedEmoji, setPickedEmoji ] = useState<ImageSourcePropType | undefined>(undefined);
+  const imageRef = useRef<View>(null);
+  if (status === null){
+    requestPermission();
+  }
 
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -45,15 +50,27 @@ export default function Index() {
     setIsModalVisible(false);
   }
   const onSaveImageAsync = async () => {
-    //depois
-  }
+    try{
+      const localUri = await captureRef(imageRef, {
+        height: 440,
+        quality: 1,
+      });
+      await MediaLibrary.saveToLibraryAsync(localUri);
+      if(localUri){
+        alert("Salvo!");
+      }
+    }catch(e){
+      console.log(e);
+    }
+  };
+
 
   return (
     <GestureHandlerRootView style={styles.container}>
       <View style={styles.container}>
         <Text style={styles.text}>Site dedicado a apoiadores do bolsonaro e Palestina</Text>
         <Link href="/about" style={styles.button}>Sobre</Link>
-        <View style={ styles.imageContainer }>
+        <View ref={imageRef} collapsable={false} style={ styles.imageContainer }>
             <ImageViewer imgSource={bolsonaro} selectedImage={selectedImage} />
             {pickedEmoji && <EmojiSticker imageSize={40} stickerSource={pickedEmoji} />}
         </View> 
