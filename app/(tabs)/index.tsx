@@ -1,4 +1,4 @@
-import { ImageSourcePropType, Text, View , StyleSheet } from "react-native";
+import { ImageSourcePropType, Text, View , StyleSheet, Platform } from "react-native";
 import { Link } from "expo-router";
 import * as ImagePicker from 'expo-image-picker';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -50,17 +50,18 @@ export default function Index() {
     setIsModalVisible(false);
   }
   const onSaveImageAsync = async () => {
-    try{
+    try {
       const localUri = await captureRef(imageRef, {
         height: 440,
         quality: 1,
       });
       await MediaLibrary.saveToLibraryAsync(localUri);
       if(localUri){
-        alert("Salvo!");
+        alert("Imagem salva na galeria!");
       }
-    }catch(e){
+    } catch(e) {
       console.log(e);
+      alert("Erro ao salvar a imagem");
     }
   };
 
