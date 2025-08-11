@@ -7,9 +7,11 @@ type Props = {
     label: string;
     theme?: 'primary';
     onPress?: () => void ;
+    onPress?: () => void ;
 };
 
 
+export default function Button({ label, theme, onPress }: Props) {
 export default function Button({ label, theme, onPress }: Props) {
     if (theme === 'primary') {
         return (
@@ -21,6 +23,7 @@ export default function Button({ label, theme, onPress }: Props) {
             >
                 <Pressable
                     style={[styles.button, { backgroundColor: '#fff' }]}
+                    onPress={onPress}
                     onPress={onPress}
                     >
                     <FontAwesome
